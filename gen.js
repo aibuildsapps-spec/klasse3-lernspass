@@ -57,16 +57,14 @@
     op = op || r.pick(OPS);
     var a, b, ans, q;
     if (op === '+') {
-      if (r.f() < 0.5) { a = r.int(12, 69); b = r.int(11, 99 - a); }
-      else { a = r.int(101, 799); b = r.int(11, Math.min(299, 999 - a)); }
+      a = r.int(12, 69); b = r.int(11, 99 - a);
       ans = a + b;
     } else if (op === '-') {
-      if (r.f() < 0.5) { a = r.int(31, 99); b = r.int(11, a - 10); }
-      else { a = r.int(201, 999); b = r.int(11, Math.min(a - 10, 500)); }
+      a = r.int(31, 99); b = r.int(11, a - 10);
       ans = a - b;
     } else if (op === '·') {
       if (r.f() < 0.75) { a = r.int(2, 10); b = r.int(2, 10); }
-      else { a = r.int(2, 9) * 10; b = r.int(2, 9); }
+      else { a = r.int(2, 5) * 10; b = r.int(2, Math.floor(100 / a)); }
       ans = a * b;
     } else {
       b = r.int(2, 10); q = r.int(2, 10); a = b * q; ans = q;
@@ -88,7 +86,7 @@
 
   function diktat(r) {
     var n;
-    do { n = r.int(101, 999); } while (n % 100 === 0);
+    do { n = r.int(13, 99); } while (n % 10 === 0);
     var w = numberWords(n);
     return {
       q: 'Zahlendiktat: Schreibe die Zahl mit Ziffern.', kind: 'fields',
@@ -98,46 +96,46 @@
   }
 
   function stellen(r) {
-    var h = r.int(1, 9), z = r.int(0, 9), e = r.int(0, 9), n = h * 100 + z * 10 + e;
+    var z = r.int(1, 9), e = r.int(0, 9), n = z * 10 + e;
     if (r.f() < 0.5) {
       return {
         q: 'Trage die Zahl <b>' + n + '</b> in die Stellenwerttafel ein.', kind: 'fields',
-        parts: [{ table: { head: ['H', 'Z', 'E'], row: [{ f: 0 }, { f: 1 }, { f: 2 }] } }],
-        answers: [S(h), S(z), S(e)], solution: n + ' = ' + h + ' H, ' + z + ' Z, ' + e + ' E'
+        parts: [{ table: { head: ['Z', 'E'], row: [{ f: 0 }, { f: 1 }] } }],
+        answers: [S(z), S(e)], solution: n + ' = ' + z + ' Z, ' + e + ' E'
       };
     }
     return {
       q: 'Welche Zahl steht in der Stellenwerttafel?', kind: 'fields',
-      parts: [{ table: { head: ['H', 'Z', 'E'], row: [S(h), S(z), S(e)] } }, 'Zahl:', { f: 0 }],
-      answers: [S(n)], solution: h + ' H, ' + z + ' Z, ' + e + ' E = ' + n
+      parts: [{ table: { head: ['Z', 'E'], row: [S(z), S(e)] } }, 'Zahl:', { f: 0 }],
+      answers: [S(n)], solution: z + ' Z, ' + e + ' E = ' + n
     };
   }
 
-  function gcode(h, z, e) {
+  function gcode(z, e) {
     function rep(cls, k) { var s = ''; for (var i = 0; i < k; i++) s += '<span class="' + cls + '"></span>'; return s; }
-    return '<div class="gcode"><span class="ggrp">' + rep('gh', h) + '</span><span class="ggrp">' + rep('gz', z) + '</span><span class="ggrp">' + rep('ge', e) + '</span></div>';
+    return '<div class="gcode"><span class="ggrp">' + rep('gz', z) + '</span><span class="ggrp">' + rep('ge', e) + '</span></div>';
   }
-  var GLEG = '<div class="legend"><span class="gh"></span> = Hunderter (100) &nbsp; <span class="gz"></span> = Zehner (10) &nbsp; <span class="ge"></span> = Einer (1)</div>';
+  var GLEG = '<div class="legend"><span class="gz"></span> = Zehner (10) &nbsp; <span class="ge"></span> = Einer (1)</div>';
 
   function geheim(r) {
-    var h = r.int(1, 9), z = r.int(0, 9), e = r.int(0, 9), n = h * 100 + z * 10 + e;
+    var z = r.int(1, 9), e = r.int(0, 9), n = z * 10 + e;
     if (r.f() < 0.5) {
       return {
         q: 'Geheimschrift: Welche Zahl ist das?', kind: 'fields',
-        visual: GLEG + gcode(h, z, e), parts: ['Zahl:', { f: 0 }], answers: [S(n)],
-        solution: h + ' Hunderter, ' + z + ' Zehner, ' + e + ' Einer = ' + n
+        visual: GLEG + gcode(z, e), parts: ['Zahl:', { f: 0 }], answers: [S(n)],
+        solution: z + ' Zehner, ' + e + ' Einer = ' + n
       };
     }
     return {
       q: 'Schreibe <b>' + n + '</b> in Geheimschrift. Wie viele Zeichen brauchst du?', kind: 'fields',
       visual: GLEG,
-      parts: [{ html: '<span class="gh"></span>' }, { f: 0 }, { html: '<span class="gz"></span>' }, { f: 1 }, { html: '<span class="ge"></span>' }, { f: 2 }],
-      answers: [S(h), S(z), S(e)], solution: n + ' = ' + h + ' Hunderter, ' + z + ' Zehner, ' + e + ' Einer'
+      parts: [{ html: '<span class="gz"></span>' }, { f: 0 }, { html: '<span class="ge"></span>' }, { f: 1 }],
+      answers: [S(z), S(e)], solution: n + ' = ' + z + ' Zehner, ' + e + ' Einer'
     };
   }
 
   function hfeld(r) {
-    var r0 = r.int(0, 96), c0 = r.int(0, 6), rows = 3, cols = 4, cells = [], i, j;
+    var r0 = r.int(0, 7), c0 = r.int(0, 6), rows = 3, cols = 4, cells = [], i, j;
     for (i = 0; i < rows * cols; i++) cells.push(i);
     var blanks = r.shuffle(cells).slice(0, 4).sort(function (a, b) { return a - b; });
     var grid = [], answers = [], k = 0, sol = [];
@@ -157,9 +155,9 @@
   }
 
   function ordnen(r) {
-    var asc = r.f() < 0.5, set = {}, nums = [], base = r.int(1, 9) * 100;
+    var asc = r.f() < 0.5, set = {}, nums = [], base = r.int(1, 8) * 10;
     while (nums.length < 5) {
-      var v = r.f() < 0.6 ? base + r.int(0, 99) : r.int(101, 999);
+      var v = r.f() < 0.6 ? base + r.int(0, 9) : r.int(11, 99);
       if (!set[v]) { set[v] = 1; nums.push(v); }
     }
     var sorted = nums.slice().sort(function (a, b) { return asc ? a - b : b - a; });
@@ -172,10 +170,9 @@
 
   var STEPNAME = { 1: 'Einerschritten', 2: 'Zweierschritten', 5: 'Fünferschritten', 10: 'Zehnerschritten', 100: 'Hunderterschritten' };
   function zaehlen(r) {
-    var step = r.pick([1, 10, 10, 100, 100, 2, 5]), fwd = r.f() < 0.5, n = 4, span = step * n;
-    var start = fwd ? r.int(0, 1000 - span) : r.int(span, 1000);
-    if (step === 100) start = r.int(0, 9) * 10 + r.int(0, 9) * 100 + (fwd ? 0 : 0);
-    if (fwd && start + span > 1000) start = 1000 - span;
+    var step = r.pick([1, 10, 10, 2, 5]), fwd = r.f() < 0.5, n = 4, span = step * n;
+    var start = fwd ? r.int(0, 100 - span) : r.int(span, 100);
+    if (fwd && start + span > 100) start = 100 - span;
     if (!fwd && start - span < 0) start = span;
     var seq = [start], parts = [start + ','], answers = [];
     for (var i = 1; i <= n; i++) {
@@ -190,7 +187,7 @@
   }
 
   function vornach(r) {
-    var n = r.int(101, 998);
+    var n = r.int(11, 98);
     return {
       q: 'Schreibe den Vorgänger und den Nachfolger auf.', kind: 'fields',
       parts: [{ f: 0 }, '◀', { html: '<b class="mid">' + n + '</b>' }, '▶', { f: 1 }],
@@ -198,7 +195,7 @@
     };
   }
   function nzehn(r) {
-    var n; do { n = r.int(101, 998); } while (n % 10 === 0);
+    var n; do { n = r.int(11, 99); } while (n % 10 === 0);
     var lo = n - (n % 10);
     return {
       q: 'Schreibe die beiden <b>Nachbarzehner</b> von ' + n + ' auf.', kind: 'fields',
@@ -207,8 +204,8 @@
     };
   }
   function nhund(r) {
-    var n; do { n = r.int(101, 999); } while (n % 100 === 0);
-    var lo = Math.floor(n / 100) * 100;
+    var n; n = r.int(11, 99);
+    var lo = 0;
     return {
       q: 'Schreibe die beiden <b>Nachbarhunderter</b> von ' + n + ' auf.', kind: 'fields',
       parts: [{ f: 0 }, '&lt;', { html: '<b class="mid">' + n + '</b>' }, '&lt;', { f: 1 }],
@@ -219,10 +216,10 @@
   var NAMES = ['Mia', 'Ben', 'Lena', 'Paul', 'Emma', 'Noah', 'Lara', 'Finn'];
   function sach(r) {
     var t = r.int(1, 4), nm = r.pick(NAMES), a, b, d, q, p, k, ans, text, unit = '';
-    if (t === 1) { a = r.int(120, 600); b = r.int(20, 300); ans = a + b; text = nm + ' hat ' + a + ' Sticker. Zum Geburtstag bekommt sie noch ' + b + ' dazu. Wie viele Sticker hat sie jetzt?'; }
-    else if (t === 2) { d = r.int(2, 9); q = r.int(3, 12); a = d * q; ans = q; text = d + ' Kinder teilen ' + a + ' Gummibärchen gerecht. Wie viele Gummibärchen bekommt jedes Kind?'; }
-    else if (t === 3) { p = r.pick([20, 30, 40, 50, 60]); k = r.int(2, 6); ans = p * k; unit = 'Cent'; text = 'Ein Heft kostet ' + p + ' Cent. Wie viel kosten ' + k + ' Hefte?'; }
-    else { a = r.int(120, 400); b = r.int(15, 90); ans = a - b; text = 'Im Zug sitzen ' + a + ' Leute. An der Haltestelle steigen ' + b + ' Leute aus. Wie viele Leute sitzen noch im Zug?'; }
+    if (t === 1) { a = r.int(20, 70); b = r.int(10, 100 - a); ans = a + b; text = nm + ' hat ' + a + ' Sticker. Zum Geburtstag bekommt sie noch ' + b + ' dazu. Wie viele Sticker hat sie jetzt?'; }
+    else if (t === 2) { d = r.int(2, 9); q = r.int(3, Math.floor(100 / d)); a = d * q; ans = q; text = d + ' Kinder teilen ' + a + ' Gummibärchen gerecht. Wie viele Gummibärchen bekommt jedes Kind?'; }
+    else if (t === 3) { p = r.pick([10, 20, 30, 40, 50]); k = r.int(2, Math.floor(100 / p)); ans = p * k; unit = 'Cent'; text = 'Ein Heft kostet ' + p + ' Cent. Wie viel kosten ' + k + ' Hefte?'; }
+    else { a = r.int(40, 99); b = r.int(10, a - 10); ans = a - b; text = 'Im Zug sitzen ' + a + ' Leute. An der Haltestelle steigen ' + b + ' Leute aus. Wie viele Leute sitzen noch im Zug?'; }
     return {
       q: 'Sachaufgabe: ' + text, kind: 'fields', parts: ['Antwort:', { f: 0 }, unit],
       answers: [S(ans)], solution: ans + (unit ? ' ' + unit : '')
@@ -232,15 +229,15 @@
   var MATH_TOPICS = [
     { id: 'kopf', name: 'Kopfrechnen (+ − · :)', emoji: '🧠', gen: kopf, tip: 'Plus und Minus: erst die Zehner, dann die Einer. Mal und Geteilt: denk ans kleine Einmaleins. Probe: 56 : 7 = 8, weil 8 · 7 = 56.' },
     { id: 'rest', name: 'Division mit Rest', emoji: '➗', gen: rest, tip: 'Wie oft passt die Zahl hinein? Was übrig bleibt, ist der Rest. Der Rest ist immer kleiner als die Teiler-Zahl. Beispiel: 15 : 4 = 3 Rest 3, denn 3 · 4 = 12 und 15 − 12 = 3.' },
-    { id: 'diktat', name: 'Zahlendiktat', emoji: '🎧', gen: diktat, tip: 'Höre oder lies die Zahl und schreibe sie mit Ziffern. dreihundertvierundzwanzig = 324. Bei „vierundzwanzig“ wird zuerst die Einer-Zahl gesprochen, aber 24 schreibst du mit der 2 vorne!' },
-    { id: 'stellen', name: 'Stellenwerttafel', emoji: '🔢', gen: stellen, tip: 'H = Hunderter, Z = Zehner, E = Einer. 482 = 4 H, 8 Z, 2 E. Wenn eine Stelle leer ist, schreibst du eine 0. 305 = 3 H, 0 Z, 5 E.' },
-    { id: 'geheim', name: 'Geheimschrift', emoji: '🕵️', gen: geheim, tip: 'Zähle jede Sorte Zeichen einzeln: Hunderter, Zehner, Einer. Dann setzt du die Zahl zusammen.' },
-    { id: 'hfeld', name: 'Hunderterfeld-Ausschnitte', emoji: '🧩', gen: hfeld, tip: 'Im Hunderterfeld geht es nach rechts immer +1 und nach unten immer +10. Nach links −1, nach oben −10.' },
+    { id: 'diktat', name: 'Zahlendiktat', emoji: '🎧', gen: diktat, tip: 'Höre oder lies die Zahl und schreibe sie mit Ziffern. siebenundvierzig = 47. Bei „siebenundvierzig“ wird zuerst die Einer-Zahl gesprochen, aber 47 schreibst du mit der 4 vorne!' },
+    { id: 'stellen', name: 'Stellenwerttafel', emoji: '🔢', gen: stellen, tip: 'Z = Zehner, E = Einer. 48 = 4 Z, 8 E. Wenn eine Stelle leer ist, schreibst du eine 0. 50 = 5 Z, 0 E.' },
+    { id: 'geheim', name: 'Geheimschrift', emoji: '🕵️', gen: geheim, tip: 'Zähle jede Sorte Zeichen einzeln: Zehner und Einer. Dann setzt du die Zahl zusammen.' },
+    { id: 'hfeld', name: 'Hunderterfeld-Ausschnitte', emoji: '🧩', gen: hfeld, tip: 'Im Hunderterfeld (1 bis 100) geht es nach rechts immer +1 und nach unten immer +10. Nach links −1, nach oben −10.' },
     { id: 'ordnen', name: 'Zahlen ordnen', emoji: '📶', gen: ordnen, tip: 'Vergleiche zuerst die Hunderter, dann die Zehner, dann die Einer. < heißt „kleiner als“, > heißt „größer als“.' },
-    { id: 'zaehlen', name: 'Vorwärts & rückwärts zählen', emoji: '🔁', gen: zaehlen, tip: 'In Zehnerschritten ändert sich nur die Zehnerstelle: 340, 350, 360. Rückwärts rechnest du minus. In Hunderterschritten ändert sich nur die Hunderterstelle.' },
-    { id: 'vornach', name: 'Vorgänger & Nachfolger', emoji: '↔️', gen: vornach, tip: 'Vorgänger = eine Zahl davor (−1). Nachfolger = eine Zahl danach (+1). Achtung bei 300, 410, 500 … : der Vorgänger von 400 ist 399!' },
-    { id: 'nzehn', name: 'Nachbarzehner', emoji: '🔟', gen: nzehn, tip: 'Der Nachbarzehner ist der volle Zehner direkt davor und direkt danach. 347 liegt zwischen 340 und 350.' },
-    { id: 'nhund', name: 'Nachbarhunderter', emoji: '💯', gen: nhund, tip: 'Der Nachbarhunderter ist der volle Hunderter direkt davor und direkt danach. 347 liegt zwischen 300 und 400.' }
+    { id: 'zaehlen', name: 'Vorwärts & rückwärts zählen', emoji: '🔁', gen: zaehlen, tip: 'In Zehnerschritten ändert sich nur die Zehnerstelle: 34, 44, 54. Rückwärts rechnest du minus.' },
+    { id: 'vornach', name: 'Vorgänger & Nachfolger', emoji: '↔️', gen: vornach, tip: 'Vorgänger = eine Zahl davor (−1). Nachfolger = eine Zahl danach (+1). Achtung bei vollen Zehnern: der Vorgänger von 40 ist 39!' },
+    { id: 'nzehn', name: 'Nachbarzehner', emoji: '🔟', gen: nzehn, tip: 'Der Nachbarzehner ist der volle Zehner direkt davor und direkt danach. 47 liegt zwischen 40 und 50.' },
+    { id: 'nhund', name: 'Nachbarhunderter', emoji: '💯', gen: nhund, tip: 'Der Nachbarhunderter ist der volle Hunderter direkt davor und direkt danach. 47 liegt zwischen 0 und 100.' }
   ];
 
   function topicOf(id) { for (var i = 0; i < MATH_TOPICS.length; i++) if (MATH_TOPICS[i].id === id) return MATH_TOPICS[i]; return null; }
