@@ -13,7 +13,7 @@
 
 ## 3. Update schicken
 1. Dateien ändern (z. B. neue Aufgaben in `gen.js`, Prüfungsdatum oben in `app.js` bei `EXAM`).
-2. In `version.js` die Nummer erhöhen (z. B. `1.0.0` → `1.0.1`).
+2. In `version.js` **und** in `sw.js` (`VERSION`) dieselbe neue Nummer eintragen (z. B. `1.1.1` → `1.1.2`).
 3. Bei Netlify: Site → **Deploys** → den Ordner `lernspass` erneut hineinziehen. **Der Link bleibt gleich.**
 4. Sobald das iPad Internet hat und die App geöffnet wird, lädt sie das Update im Hintergrund und zeigt „Neue Version ist da – tippe zum Neuladen“. Sterne und Ergebnisse bleiben erhalten.
 

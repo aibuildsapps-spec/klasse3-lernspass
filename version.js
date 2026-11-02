@@ -1,2 +1,2 @@
-// Bei JEDEM Update diese Nummer erhöhen, sonst erkennen die iPads die neue Version nicht.
-self.APP_VERSION = '1.1.0';
+// Bei JEDEM Update diese Nummer erhöhen UND dieselbe Nummer in sw.js (VERSION).
+self.APP_VERSION = '1.1.1';

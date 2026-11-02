@@ -1,6 +1,7 @@
 /* Service Worker: macht die App offline-fähig und lädt Updates, sobald Internet da ist. */
-importScripts('version.js');
-const CACHE = 'lernspass-' + self.APP_VERSION;
+// WICHTIG: Bei jedem Update diese Nummer UND die in version.js erhöhen (beide gleich).
+const VERSION = '1.1.1';
+const CACHE = 'lernspass-' + VERSION;
 const FILES = ['./', 'index.html', 'styles.css', 'gen.js', 'app.js', 'version.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {

@@ -711,7 +711,7 @@
     var hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadController) showUpdateBanner(); hadController = true; });
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').then(function (reg) { swReg = reg; reg.update().catch(function () { }); }).catch(function () { });
+      navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) { swReg = reg; reg.update().catch(function () { }); }).catch(function () { });
     });
     document.addEventListener('visibilitychange', function () { if (!document.hidden && swReg) swReg.update().catch(function () { }); });
   }
